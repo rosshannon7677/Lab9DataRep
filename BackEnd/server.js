@@ -26,7 +26,7 @@ const mongoose = require('mongoose');
 main().catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb+srv://admin:admin@martinscluster.w5rtkz0.mongodb.net/DB14?retryWrites=true&w=majority');
+  await mongoose.connect('mongodb+srv://admin:admin@cluster0.bypnyjt.mongodb.net/MyDB?retryWrites=true&w=majority');
 
   // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
@@ -38,6 +38,22 @@ const bookSchema = new mongoose.Schema({
 })
 
 const bookModel = mongoose.model('my_books', bookSchema);
+
+app.put('/api/book/:id', async(req,res)=>{
+  console.log('update: '+req.params.id);
+
+  let book = await bookModel.findByIdAndUpdate(req.params.id, req.body,{new:true});
+  res.send(book);
+})
+
+
+app.delete('/api/book/:id',async(req, res)=>{
+  console.log("Delete: "+req.params.id);
+
+  let book = await bookModel.findByIdAndDelete(req.params.id);
+  res.send(book);
+})
+
 
 app.post('/api/book', (req,res)=>{
     console.log(req.body);
